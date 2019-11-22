@@ -1,5 +1,5 @@
 <template>
-    <main class="ingreso my-5">
+  <main class="ingreso my-5">
     <div class="container ingreso__container">
       <div class="ingreso__img-container">
         <img src="@/assets/images/logo-CCHC.png" alt="Logo CCHC" class="ingreso__img img-fluid">
@@ -11,7 +11,7 @@
           <p class="text-center ingreso__text text-small px-3">Para poder comenzar una solicitud de postulación seleccione la
             siguiente opción:</p>
           <div class="text-center">
-            <a href="creacion-solicitud.html" class="btn btn-primary text-uppercase mt-3">Postulación socios nuevos</a>
+            <router-link to="/creacion-de-solicitud" class="btn btn-primary text-uppercase mt-3">Postulación socios nuevos</router-link>
           </div>
         </div>
         <div class="col-lg-4 ingreso__item ingreso__border mt-5">
@@ -42,12 +42,12 @@
 </template>
 
 <script>
-export default {
-  name: 'ingresoConsulta',
-  data () {
-    return {
-      algo:''
+  export default {
+   name: 'ingresoConsulta',
+    data () {
+      return {
+        algo: ''
+      }
     }
   }
-}
 </script>
