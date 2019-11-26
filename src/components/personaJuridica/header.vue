@@ -20,7 +20,7 @@
 	        <span class="header__progress-line"></span>
 	        <div class="header__progress-number-container">
 	          <span class="header__progress-number header__progress-number-active">1</span>
-	          <p class="header__progress-text px-1">Datos principales</p>
+	          <p class="header__progress-text px-1">Datos principales</p></b-tabs>
 	        </div>
 	        <div class="header__progress-number-container">
 	          <span class="header__progress-number">2</span>
@@ -44,9 +44,14 @@
 	        </div>
 	      </div>
 	    </div>
+		<personaJuridicaForm2></personaJuridicaForm2>
+		<personaJuridicaForm3></personaJuridicaForm3>
+		<personaJuridicaForm4></personaJuridicaForm4>
+		<personaJuridicaForm5></personaJuridicaForm5>
+		<personaJuridicaForm6></personaJuridicaForm6>
 	</header>
-
 </template>
+
 
 <script>
   export default {

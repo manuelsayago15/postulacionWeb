@@ -1,6 +1,6 @@
 <template>
 	<main class="pj-formulario-5">
-		<Header></Header>
+		<!--<Header></Header>-->
 	    <div class="container">
 	      <div class="row">
 

@@ -1,6 +1,6 @@
 <template>
     <main class="pj-formulario-2">
-  		<Header></Header>
+  		<!--<Header></Header>-->
 	    <div class="container">
 	      <div class="row">
 
@@ -76,10 +76,10 @@
 
 	      <div class="creacion-solicitud__buttons py-5">
 	        <a href="ingreso-y-consulta.html" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
-	        <router-link to="/persona-juridica-formulario-1" class="btn btn-primary btn--big m-2"><i
-	            class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</router-link>
-	        <router-link to="/persona-juridica-formulario-3" class="btn btn-primary btn--big m-2">Siguiente <i
-	            class="fas fa-long-arrow-alt-right fa-lg"></i></router-link>
+	        <button class="btn btn-primary btn--big m-2"><i
+	            class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
+	        <button class="btn btn-primary btn--big m-2">Siguiente <i
+	            class="fas fa-long-arrow-alt-right fa-lg"></i></button>
 	      </div> <!-- creacion-solicitud__buttons -->
 
 	    </div> <!-- container -->
@@ -96,7 +96,8 @@
 		},
 		data () {
 		  return {
-		    name: ''
+		    name: '',
+		    seen: false
 		  }
 		}
 	}

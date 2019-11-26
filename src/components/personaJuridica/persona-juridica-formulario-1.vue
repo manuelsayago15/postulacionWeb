@@ -1,7 +1,7 @@
 <template>
 	<main class="pj-formulario-1">
 		<Header></Header>
-	    <div class="container">
+	    <div class="container" v-if="seen">
 	      <div class="row">
 	        <!-- LEFT COLUMN -->
 	        <div class="col-md-6 col-xl-7">
@@ -10,7 +10,7 @@
 
 	            <div class="col-lg-7">
 	              <form class="info-empresa-form pb-4">
-	                <label class="info-empresa-form__label text-small font-weight-bold" for="RUT">RUT*</label>
+	                <label class="info-empresa-form__label text-small font-weight-bold" v-model="rut" for="RUT">RUT*</label>
 	                <input type="number" id="rut" class="info-empresa-form__input form-control" required>
 	                <p class="text-small font-weight-bold info-empresa-form__question">¿Con qué nombre quiere quedar en los
 	                  registros de la CChC?</p>
@@ -156,25 +156,42 @@
 
 	      <div class="creacion-solicitud__buttons py-5">
 	        <a href="ingreso-y-consulta.html" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
-	        <router-link to="/persona-juridica-formulario-2" class="btn btn-primary btn--big m-2">Siguiente <i
-	            class="fas fa-long-arrow-alt-right fa-lg"></i></router-link>
+	        <button v-on:click="seen =! seen" class="btn btn-primary btn--big m-2">Siguiente <i
+	            class="fas fa-long-arrow-alt-right fa-lg"></i></button>
 	      </div>
-
+	      
 	    </div> <!-- container -->
+  <personaJuridicaForm2></personaJuridicaForm2>
+  <personaJuridicaForm3></personaJuridicaForm3>
+  <personaJuridicaForm4></personaJuridicaForm4>
+  <personaJuridicaForm5></personaJuridicaForm5>
+  <personaJuridicaForm6></personaJuridicaForm6>
   </main> <!-- formulario-1 -->
 </template>
 
 
 <script>
 	import Header from '@/components/personaJuridica/header';
+	//import personaJuridicaForm1 from '@/components/personaJuridica/persona-juridica-formulario-1'
+	import personaJuridicaForm2 from '@/components/personaJuridica/persona-juridica-formulario-2'
+	import personaJuridicaForm3 from '@/components/personaJuridica/persona-juridica-formulario-3'
+	import personaJuridicaForm4 from '@/components/personaJuridica/persona-juridica-formulario-4'
+	import personaJuridicaForm5 from '@/components/personaJuridica/persona-juridica-formulario-5'
+	import personaJuridicaForm6 from '@/components/personaJuridica/persona-juridica-formulario-6'
 	export default {
 		name: 'personaJuridicaForm1',
 		components:{
-			Header
+			Header,
+			personaJuridicaForm2,
+			personaJuridicaForm3,
+			personaJuridicaForm4,
+			personaJuridicaForm5,
+			personaJuridicaForm6,
 		},
 		data () {
 		  return {
-		    name: ''
+		    name: '',
+		    seen: true,
 		  }
 		}
 	}
