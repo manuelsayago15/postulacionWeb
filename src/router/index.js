@@ -8,6 +8,8 @@ import personaJuridicaForm3 from '@/components/personaJuridica/persona-juridica-
 import personaJuridicaForm4 from '@/components/personaJuridica/persona-juridica-formulario-4'
 import personaJuridicaForm5 from '@/components/personaJuridica/persona-juridica-formulario-5'
 import personaJuridicaForm6 from '@/components/personaJuridica/persona-juridica-formulario-6'
+import Header from '@/components/personaJuridica/header.vue'
+import personaJuridicaForm from '@/components/personaJuridica/persona-juridica-form'
 
 Vue.use(Router)
 
@@ -22,6 +24,11 @@ export default new Router({
       path: '/creacion-de-solicitud',
       name: 'creacionSolicitud',
       component: creacionSolicitud
+    },
+    {
+      path: '/persona-juridica-form',
+      name: 'personaJuridicaForm',
+      component: Header
     },
     {
       path: '/persona-juridica-formulario-1',

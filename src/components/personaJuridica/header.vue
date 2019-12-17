@@ -44,22 +44,28 @@
 	        </div>
 	      </div>
 	    </div>
-		<personaJuridicaForm2></personaJuridicaForm2>
-		<personaJuridicaForm3></personaJuridicaForm3>
-		<personaJuridicaForm4></personaJuridicaForm4>
-		<personaJuridicaForm5></personaJuridicaForm5>
-		<personaJuridicaForm6></personaJuridicaForm6>
+
+	    <personaJuridicaForm></personaJuridicaForm>
+
 	</header>
+
 </template>
 
 
 <script>
+	import personaJuridicaForm from '@/components/personaJuridica/persona-juridica-form'
+	import { mapState, mapMutations } from 'vuex'
   export default {
-   name: 'Header',
+   name: 'header',
+   components: {
+   	personaJuridicaForm
+   },
     data () {
       return {
-        header: ''
       }
-    }
+    },
+    computed:{
+	    ...mapState(['done1', 'done2', 'done3', 'done4', 'done5', 'done6'])
+	 }
   }
 </script>

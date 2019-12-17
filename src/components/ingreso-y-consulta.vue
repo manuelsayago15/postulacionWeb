@@ -42,12 +42,12 @@
 </template>
 
 <script>
-  export default {
-   name: 'ingresoConsulta',
-    data () {
-      return {
-        algo: ''
-      }
+export default {
+  name: 'ingresoConsulta',
+  data () {
+    return {
+      algo: ''
     }
   }
+}
 </script>

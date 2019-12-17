@@ -6,6 +6,7 @@ import router from './router'
 import '@/assets/css/style.css'
 import '@/assets/JS/script.js'
 import BootstrapVue from 'bootstrap-vue'
+import Datepicker from 'vuejs-datepicker'
 //import 'bootstrap/dist/css/bootstrap.css'
 //import 'bootstrap-vue/dist/bootstrap-vue.css'
 
