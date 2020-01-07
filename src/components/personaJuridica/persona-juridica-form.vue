@@ -2,7 +2,7 @@
   <main class="pj-formulario-1">
     <!-- Formulario 1 -->
       <div class="container" style="margin-top: 15px;">
-        <div class="row">
+        <div class="row" >
           <!-- LEFT COLUMN -->
           <div class="col-md-6 col-xl-7">
             <h3 class="text-uppercase text-primary">Información de la empresa</h3>
@@ -24,7 +24,7 @@
                   <input type="text" v-model="fantasyName" id="name"
                     class="info-empresa-form__input info-empresa-form__input--razon-name form-control">
                   <label class="info-empresa-form__check-container">
-                    <input type="checkbox" class="info-empresa-form__check">
+                    <input type="checkbox" :disabled="disabledTwo" @click="disabled = !disabled" class="info-empresa-form__check">
                     <span class="info-empresa-form__check-style"></span>
                   </label>
                   
@@ -33,7 +33,7 @@
                   <input name="Razón Social" type="text" v-validate="'required'" v-model="razonSocial" id="razon"
                     class="info-empresa-form__input info-empresa-form__input--razon-name form-control" required>
                   <label class="info-empresa-form__check-container">
-                    <input type="checkbox" class="info-empresa-form__check">
+                    <input type="checkbox" :disabled="disabled" @click="disabledTwo = !disabledTwo" class="info-empresa-form__check">
                     <span class="info-empresa-form__check-style"></span>
                   </label>
                   <div class="invalid-feedback">
@@ -46,8 +46,9 @@
                     {{errors.first('date')}}
                   </div>
                   <label class="info-empresa-form__label text-small font-weight-bold" for="giro">Giro*</label>
-                  <select name="Giro" type="text" v-validate="'required'" v-model="giro" id="giro" class="info-empresa-form__input form-control" required>
+                  <select name="Giro" id="giro" type="text" class="info-empresa-form__input form-control" v-model="giroModel" v-validate="'required'" >
                     <option value="" disabled>Seleccione un Giro</option>
+                    <option v-for="(giroArray, key) in giros" :value="giroArray.giroId" :key="key">{{ giroArray.giro }}</option>
                   </select>
                   <div class="invalid-feedback">
                     {{errors.first('giro')}}
@@ -63,12 +64,31 @@
                   <label class="info-empresa-form__label text-small font-weight-bold" for="categoria">Categoría*</label>
                   <select name="Categoría" v-validate="'required'" v-model="category" id="categoria" class="info-empresa-form__input form-control" required>
                     <option value="" disabled>Seleccione una Categoría</option>
+                    <option v-for="(categoria, key) in categorias" :value="categoria.categoriaId" :key="key">{{ categoria.categoria }}</option>
                   </select>
                   <div class="invalid-feedback">
                     {{errors.first('category')}}
                   </div>
                 </form>
               </div> <!-- col-lg-7 -->
+              TEST
+              <h1>Normal file upload</h1>
+              <form action="http://postulacion.isc.cl/uploadfile" method="post" enctype="multipart/form-data">
+                <label>Select File</label>
+                <input type="file" name="fileToUpload" id="fileToUpload"> <br> <br>
+                <button type="submit">Upload Now</button>
+                
+              </form>
+              <br><hr><br>
+              <h1>File upload with progressbar</h1>
+
+              <label>Select File</label>
+              <input type="file" name="fileToUpload1" id="fileToUpload1"> <br> <br>
+              <progress :value="percent" max="100"> </progress> % {{percent}}
+              <br><br>
+              {{message}} 
+              <br><br>
+              <button @click="upload();">Upload Now</button>
 
               <div class="col-lg-5 d-flex flex-column">
                 <div class="info-empresa__img-icon">
@@ -96,6 +116,10 @@
                     </form>
                   </div>
                 </div>
+                <!--<template>
+                  <file-upload :url='url' :thumb-url='thumbUrl' :headers="headers" @change="onNewFile">hola</file-upload>
+                </template>-->
+
                 <form class="info-empresa-attachment__form d-flex flex-column align-items-center py-2">
                   <div>
                     <!--<input type="file" id="escritura" class="d-none" required>-->
@@ -109,12 +133,15 @@
                           Escritura constitución*
                         </span>
                     </label>
+
+                      <!--<input type="file" id="file" ref="file" :change="onChangeFileUpload()"/>-->
+
                     <div class="invalid-feedback">
                       {{errors.first('selectedFile')}}
                     </div>
                     <template v-if="selectedFile.length == 0">
-                      <input type="file" v-validate="'required'" id="escritura" class="d-none" required @change="onFileSelected">
-                      <button @click="onUpload">Upload!</button>
+                      <input name="Escritura" type="file" v-validate="'required'" id="escritura" class="d-none" required @change="onFileSelected">
+                      
                       <!--<select>
                         <option v-for="(file, key) in selectedFile " :value="selectedFile" :key="key">{{ file.name }}</option>
                       </select>-->
@@ -123,11 +150,28 @@
                       {{this.selectedFile[0].name}}-->
                     </template>
                     <template v-else>
+                      <button @click="onUploadNew">Upload!</button>
                       <span v-for="(file, key) in selectedFile" :value="selectedFile" :key="key">
                         Archivo seleccionado: {{ file.name }}
                       </span>
                       <i @click="removeFile" style="color: red; max-width: 100%; cursor:pointer" class="fas fa-minus-circle"></i>
                     </template>
+
+                    <!--<input type="file" id="file" ref="file" />
+
+                    <button type="button" @click='uploadFile()' >Upload file</button>
+                    <template>
+                      <div role="form">
+                        <form>
+                            <div class="form-group">
+                                <label class="btn btn-primary">
+                                    <i class="fa fa-folder-open-o" aria-hidden="true"></i>&nbsp;Seleccionar un archivo
+                                    <input type="file" accept=".pdf" @change="onFileSelected" name="myfile">
+                                </label>
+                            </div>
+                        </form>
+                        </div>
+                    </template>-->
 
 
                     <!-- Transformaciones y modificaciones -->
@@ -139,7 +183,7 @@
                       </span>
                     </label>
                     <template v-if="selectedFileTM.length == 0">
-                      <input type="file" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
+                      <input type="file" name="Modificaciones" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
                     </template>
                     <template v-else>
                       <input type="file" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
@@ -158,7 +202,7 @@
                       <span class="btn--hover-right">Memoria o CV de la empresa*</span>
                     </label>
                     <template v-if="selectedFileCV.length == 0">
-                      <input type="file" v-validate="'required'" id="cvEmpresa" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                      <input type="file" name="CV" v-validate="'required'" id="cvEmpresa" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                       required @change="onFileSelectedCV">
                     </template>
                     <template v-else>
@@ -180,7 +224,7 @@
                       </span>
                     </label>
                     <template v-if="selectedFileSRL.length == 0">
-                      <input type="file" id="escritura-social-srl" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required @change="onFileSelectedSRL">
+                      <input type="file" name="SRL" id="escritura-social-srl" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required @change="onFileSelectedSRL">
                     </template>
                     <template v-else>
                       <span v-for="(file, key) in selectedFileSRL" :value="selectedFileSRL" :key="key">
@@ -200,7 +244,7 @@
                       </span>
                     </label>
                     <template v-if="selectedFileSA.length == 0">
-                      <input type="file" id="escritura-social-sa" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required @change="onFileSelectedSA">
+                      <input type="file" name="SA" id="escritura-social-sa" class="d-none" accept=".jpg, .jpeg, .png, .pdf, application/pdf, .doc, .docx, .xml, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document" required @change="onFileSelectedSA">
                     </template>
                     <template v-else>
                         <span v-for="(file, key) in selectedFileSA" :value="selectedFileSA" :key="key">
@@ -330,7 +374,7 @@
         </div>
         <div class="creacion-solicitud__buttons py-5">
           <button @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</button>
-          <button class="btn btn-primary btn--big m-2">Siguiente <i
+          <button @click="siguiente" class="btn btn-primary btn--big m-2">Siguiente <i
               class="fas fa-long-arrow-alt-right fa-lg"></i></button>
         </div>
       </div> <!-- container -->
@@ -338,7 +382,7 @@
       <!-- Formulario 2 -->
       
       <div class="container">
-        <div class="row">
+        <div class="row" >
 
           <!-- LEFT COLUMN -->
           <div class="col-md-8 col-lg-6 formulario-3__left-column">
@@ -347,35 +391,35 @@
             <form class="d-grid info-trabajadores__form">
               <label class="info-trabajadores__label--left text-small font-weight-bold" for="nro-prof">N° de
                 Profesionales</label>
-              <input type="number" id="nro-prof" class="info-trabajadores__input--left form-control">
+              <input type="number" v-model="profesionales" id="nro-prof" class="info-trabajadores__input--left form-control">
               <label class="info-trabajadores__label--right info-trabajadores__label--right-1 text-small font-weight-bold"
                 for="nro-tec">N° de Técnicos</label>
-              <input type="number" id="nro-tec" class="info-trabajadores__input--right form-control">
+              <input type="number" v-model="tecnicos" id="nro-tec" class="info-trabajadores__input--right form-control">
               <label class="info-trabajadores__label--left text-small font-weight-bold" for="nro-adm">N° de
                 Administrativos</label>
-              <input type="number" id="nro-adm" class="info-trabajadores__input--left form-control">
+              <input type="number" v-model="administrativos" id="nro-adm"  class="info-trabajadores__input--left form-control">
               <label class="info-trabajadores__label--right info-trabajadores__label--right-2 text-small font-weight-bold"
                 for="nro-trab">N° Total de Trabajadores</label>
-              <input type="number" id="nro-trab" class="info-trabajadores__input--right form-control" disabled>
+              <input type="number" :value="parseInt(tecnicos)+parseInt(profesionales)+parseInt(administrativos)" id="nro-trab" class="info-trabajadores__input--right form-control" disabled>
             </form>
 
             <h3 class="text-primary text-uppercase py-3">Información comercial</h3>
             <form class="d-grid info-comercial-top__form info-comercial-top__form--pjuridica">
               <label class="info-comercial-top__label text-small  font-weight-bold" for="facturacion">Rango de Facturación según ventas anuales</label>
-              <select id="facturacion" class="info-comercia-top__input form-control">
+              <select id="facturacion" v-model="rangos" class="info-comercia-top__input form-control">
                 <option value="1">0 a 2.400UF anuales</option>
                 <option value="2">2.401 a 25.000UF anuales</option>
                 <option value="3">25.001 a 100.000UF anuales</option>
                 <option value="4">100.000 a 1.000.000UF anuales y más</option>
               </select>
               <div class="info-comercial-attachment info-comercial-attachment__top">
-                <input type="file" id="ult-estados" class="d-none" required>
+                <input type="file" id="ult-estados" v-validate="'required'" class="d-none" required>
                 <label for="ult-estados" class="text-small font-weight-bold pt-2 info-comercial-attachment__label"><img src="@/assets/images/mas.png"
                     alt="Adjuntar últimos estados financieros" height="33px" class="btn--sibling-hover-right"> <span
                     class="btn--hover-right">Últimos estados financieros: Balance y estado de resultados*</span></label>
               </div>
               <div class="info-comercial-attachment info-comercial-attachment__top">
-                <input type="file" id="estado-renta" class="d-none" required>
+                <input type="file" id="estado-renta" v-validate="'required'" class="d-none" required>
                 <label for="estado-renta" class="text-small font-weight-bold pt-2 info-comercial-attachment__label"><img src="@/assets/images/mas.png"
                     alt="Adjuntar Declaración Estado a la Renta" height="33px" class="btn--sibling-hover-right"> <span
                     class="btn--hover-right">Declaración Impuesto a la Renta*</span></label>
@@ -384,23 +428,23 @@
 
             <form class="info-comercial-bottom__form pt-4 pb-3">
               <label class="info-comercial-bottom__label text-small font-weight-bold" for="monto-pat">Patrimonio según último balance o Capital Inicial para empresas < 1 año*</label>
-              <input type="number" id="monto-pat" class="info-comercial-bottom__input form-control" required>
-              <label class="info-comercial-bottom__label info-comercial-bottom__label--right text-small font-weight-bold" for="para-construccion">% Dedicado a la Construcción*</label>
-              <input type="number" id="para-construccion" class="info-comercial-bottom__input info-comercial-bottom__input--right form-control" required>
+              <input type="number" id="monto-pat" v-validate="'required'" class="info-comercial-bottom__input form-control" required>
+              <!--<label class="info-comercial-bottom__label info-comercial-bottom__label--right text-small font-weight-bold" for="para-construccion">% Dedicado a la Construcción*</label>
+              <input type="number" id="para-construccion" class="info-comercial-bottom__input info-comercial-bottom__input--right form-control" required>-->
               <div class="info-comercial-attachment info-comercial-attachment__bottom">
-                <input type="file" id="capital-propio" class="d-none" required>
+                <input type="file" v-validate="'required'" id="capital-propio" class="d-none" required>
                 <label for="capital-propio" class="text-small font-weight-bold pt-2"><img src="@/assets/images/mas.png"
                     alt="Adjuntar declaración de capital propio" height="33px" class="btn--sibling-hover-right">
                   <span class="btn--hover-right">Declaración de capital propio*</span></label>
               </div>
               <div class="info-comercial-attachment info-comercial-attachment__bottom">
-                <input type="file" id="facturacion-ant" class="d-none" required>
+                <input type="file" v-validate="'required'" id="facturacion-ant" class="d-none" required>
                 <label for="facturacion-ant" class="text-small font-weight-bold pt-2"><img src="@/assets/images/mas.png"
                     alt="Adjuntar Facturación años anteriores" height="33px" class="btn--sibling-hover-right">
                   <span class="btn--hover-right">Facturación años anteriores*</span></label>
               </div>
               <label class="info-comercial-bottom__label text-small font-weight-bold" for="fact-ant">Volumen facturado año anterior*</label>
-              <input type="number" id="fact-ant" class="info-comercial-bottom__input info-comercial-bottom__input--vol-fact form-control" required>
+              <input type="number" id="fact-ant" v-validate="'required'" v-model="volumenFacturado" class="info-comercial-bottom__input info-comercial-bottom__input--vol-fact form-control" required>
               <span class="text-small font-weight-bold">UF</span>
             </form>
           </div> <!-- col-md-6 -->
@@ -411,7 +455,7 @@
         </div> <!-- row -->
 
         <div class="creacion-solicitud__buttons py-5">
-          <a href="ingreso-y-consulta.html" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
+          <button @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</button>
           <button class="btn btn-primary btn--big m-2"><i
               class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
           <button class="btn btn-primary btn--big m-2">Siguiente <i
@@ -423,7 +467,7 @@
       <div class="container">
         <div class="row">
 
-          <!-- LEFT COLUMN -->
+          <!-- LEFT COLUMN
           <div class="col-md-8 col-lg-6">
             <h3 class="text-primary text-uppercase font-weight-bold">Composición accionaria</h3>
             <form class="accionarios-participacion__form">
@@ -473,12 +517,169 @@
                 </tbody>
               </table>
             </div>
-          </div> <!-- col-md-6 -->
+          </div>  col-md-6 -->
 
-          <!-- RIGHT COLUMN -->
+          <div class="col-md-7 col-lg-6">
+          <h3 class="text-primary text-uppercase font-weight-bold">Composición accionaria</h3>
+          <form class="accionarios-participacion__form accionarios-participacion__form--pnatural">
+            <label for="rut" class="accionarios-participacion__label text-small font-weight-bold">RUT</label>
+            <input v-model="rutComp" id="rut" :disabled="disabled == 1" type="text" class="form-control accionarios-participacion__input">
+            <label for="name" class="accionarios-participacion__label text-small font-weight-bold">Razón social</label>
+            <input v-model="razonSocialComp" id="name" :disabled="disabled == 1" type="text" class="form-control accionarios-participacion__input" readonly>
+            <label for="porcentaje"
+              class="accionarios-participacion__label text-small font-weight-bold">Porcentaje</label>
+            <input v-model="porcentaje" ref="porcentaje" id="porcentaje" type="number" class="form-control accionarios-participacion__input">
+            <button type="" class="btn--accionarios-participacion btn--hover-up" @click="buscar"><img src="@/assets/images/mas.png"
+                alt="Adjuntar declaración de impuestos a la renta" height="33px"></button>
+          </form>
+
+          <div class="table-responsive pt-3">
+            <table class="table table-sm table--blue-border">
+              <thead class="bg-primary text-white">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">RUT</th>
+                  <th scope="col">Porcentaje</th>
+                  <th scope="col"> </th>
+                </tr>
+              </thead>
+            <tbody v-for="(com, indice) in composicion" :key='indice'>
+                <tr>
+                  <td> {{com.nombre}} </td>
+                  <td>{{ com.rutComp }}</td>
+                  <td>{{ com.porcentaje }}%</td>
+                  <td><a @click="editarPorcentaje(indice)"><i class="fas fa-pencil-alt icon-edit"></i></a> <a @click="eliminarComposicion(indice)"><i class="fas fa-times-circle icon-delete"></i></a>
+                  </td>
+                 <!-- <td v-if="!com.editing">{{ com.porcentaje }}%</td>-->
+                 <!-- <td v-else style="text-align: center; width: 1%;"><input type="number" @keyup.enter="updateComposicion(indice)" v-model="porcentaje" class="edit-composicion">%</td>-->
+                  <!--<td><a @click="editarPorcentaje(indice)"><i class="fas fa-pencil-alt icon-edit"></i></a> <a @click="eliminarComposicion(indice)"><i class="fas fa-times-circle icon-delete"></i></a>
+                  </td>-->
+                </tr> 
+            <!--  <tbody v-for="item in searchGente">
+              <tr>
+                  <td> {{ item.nombre }} </td>
+                  <td>{{ item.rut }}</td>
+                  <td>{{ item.porcentaje }}%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr>  -->
+              <!--  <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>50%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr> 
+                <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>30%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>20%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div> <!-- col-md-6 -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-md-5 col-lg-6">
+          <div class="container">
+
+            <div>
+            <b-modal ref="modal-crear" hide-footer title="Crear Persona">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">La persona no existe ¿Desea crearlo?</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarCreacion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarCreacion()">No</b-button></div>
+            </b-modal>
+            </div>
+
+            <div>
+            <b-modal ref="modal-editar" hide-footer title="Editar Porcentaje">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">¿Seguro que desea editar el porcentaje con el RUT {{ rutComp }}</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarEdicion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarEdicion()">No</b-button></div>
+            </b-modal>
+            </div>
+
+            <div>
+            <b-modal ref="modal-eliminar" hide-footer title="Eliminar Persona">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">¿Seguro que desea eliminar a la persona con el RUT {{ rutComp }}?</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarEliminacion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarEliminacion()">No</b-button></div>
+            </b-modal>
+            </div>
+<form v-if="formRegistrarPersona">
+  <div class="row">
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="nombre">Nombre</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="nombre">RUT</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    </div>
+    <div class="row">
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="porcentaje">Porcentaje</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="social">Razón Social</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    </div>
+  <button type="submit" class="btn btn-primary" style="float:right; padding: 2% 5% 2% 5%; margin-top: 2%;">Crear</button>
+</form>
+              <!--<form class="personas-asociadas" v-if="formRegistrarPersona">
+                  <div class="personas-asociadas-form">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold"
+                      for="rut">RUT*</label>
+                    <input type="number" id="rut" class="personas-asociadas-form__input--left form-control" required>
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--right text-small font-weight-bold"
+                      for="vocativo">Nombres</label>
+                      <input type="text" id="nombres" class="personas-asociadas-form__input--right-big  form-control">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold"
+                      for="porcentaje">Porcentaje</label>
+                    <input type="number" id="porcentaje" class="personas-asociadas-form__input--left-big  form-control">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--right text-small font-weight-bold"
+                      for="razon-social">Razón Social</label>
+                    <input type="text" id="razon-social"
+                      class="personas-asociadas-form__input--right-big  form-control">
+                  
+                   
+                  </div>
+                </form>-->
+          </div>
+        </div> <!-- col-md-6 -->
+      </div> <!-- row -->
+
+
+          <!-- RIGHT COLUMN 
           <div class="col-md-4 col-lg-6">
-          </div> <!-- col-md-6 -->
-        </div> <!-- row -->
+          </div> col-md-6 -->
+        <!--</div>  row -->
 
         <div class="creacion-solicitud__buttons py-5 mt-5">
           <a href="ingreso-y-consulta.html" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
@@ -1091,81 +1292,231 @@
         </div> <!-- creacion-solicitud__buttons -->
       </div> <!-- container -->
 
-      <!-- Formulario 5 -->
-      <div class="container">
-        <div class="row">
+    <div class="container">
+      <div class="row">
+        <div>
+  <b-button v-b-modal.modal-1>Launch demo modal</b-button>
 
-          <!-- LEFT COLUMN -->
-          <div class="col-sm-12 col-md-9 col-lg-7">
-            <h3 class="text-primary text-uppercase">Patrocinantes</h3>
-            <p class="text-muted text-small">Ambos socios deben tener sus cuotas al día</p>
+  <b-modal id="modal-1" title="BootstrapVue">
+    <p class="my-4">Hello from modal!</p>
+  </b-modal>
+</div>
+        <!-- LEFT COLUMN -->
+        <div class="col-sm-12 col-md-9 col-lg-7">
+          <h3 class="text-primary text-uppercase">Patrocinantes</h3>
+          <p class="text-muted text-small">Ambos socios deben tener sus cuotas al día</p>
 
-            <form class="d-grid patrocinante__form pt-3">
-              <label class="patrocinante__label text-small font-weight-bold" for="rut1">RUT*</label>
-              <input id="rut1" class="patrocinante__input form-control" required>
-              <label class="patrocinante__label text-small font-weight-bold" for="patrocinante1">Patrocinante 1*</label>
-              <input id="patrocinante1" class="patrocinante__input form-control" required>
-              <label class="patrocinante__label text-small font-weight-bold" for="patrocinador1">Patrocinador*</label>
-              <select id="patrocinador1" class="patrocinante__input form-control" required></select>
-              <a href="" download class="patrocinante__download">
-                <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
-                <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
-              </a>
-              <div class="patrocinante__attachment pt-2">
-                <input type="file" class="d-none" id="respaldo" required>
-                <label for="respaldo" class="d-flex patrocinante__attachment-label">
-                  <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
-                    <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
-                  </div>
-                  <div class="btn--hover-right">
-                    <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
-                    <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
-                      gremio</p>
-                  </div>
-                </label>
+<!-- Modales de Ayuda-->
+<b-modal ref="modal-ayuda-patrocinante" hide-footer title="Ayuda">
+              <div class="d-block text-center">
+                <p style="padding:5%;">Los patrocinantes son los socios...</p>
               </div>
-            </form>
-
-            <form class="d-grid patrocinante__form pt-5">
-              <label class="patrocinante__label text-small font-weight-bold" for="rut2">RUT*</label>
-              <input id="rut2" class="patrocinante__input form-control" required>
-              <label class="patrocinante__label text-small font-weight-bold" for="patrocinante2">Patrocinante 2*</label>
-              <input id="patrocinante2" class="patrocinante__input form-control" required>
-              <label class="patrocinante__label text-small font-weight-bold" for="patrocinador2">Patrocinador*</label>
-              <select id="patrocinador2" class="patrocinante__input form-control" required></select>
-              <a href="" download class="patrocinante__download">
-                <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
-                <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
-              </a>
-              <div class="patrocinante__attachment pt-2">
-                <input type="file" class="d-none" id="respaldo" required>
-                <label for="respaldo" class="d-flex patrocinante__attachment-label">
-                  <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
-                    <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
-                  </div>
-                  <div class="btn--hover-right">
-                    <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
-                    <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
-                      gremio</p>
-                  </div>
-                </label>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="okAyuda()">ok</b-button>
               </div>
-            </form>
-          </div> <!-- col-md-6 -->
+</b-modal>
 
-          <!-- RIGHT COLUMN -->
-          <div class="col-sm-3 col-md-3 col-lg-5">
-          </div> <!-- col-md-6 -->
-        </div> <!-- row -->
+<b-modal ref="modal-ayuda-patrocinador" hide-footer title="Ayuda">
+              <div class="d-block text-center">
+                <p style="padding:5%;">Los Representantes del Socio son los socios...</p>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="okAyudaPatrocinador()">ok</b-button>
+              </div>
+</b-modal>
+<!-- Fin devModales de Ayuda -->
+<form class="pt-3">
+  <div class="row">
+<div class="col-lg-6">
+<label class="patrocinante__label text-small font-weight-bold" for="rut1"><i id="AyudaPatrocinante1" @click="showAyudaPatrocinador()" class="fas fa-question-circle question-icon"></i> Socio Patrocinante 1*</label>
+<!-- HTML title specified via default slot -->
+<input type="text" class="patrocinante__input form-control" v-model="nombrePatro"  @click="getListarPatrocinante">
+<input type="text" class="patrocinante__input form-control" v-model="perIdPatrocinante" style="display:none;">
+         <!-- <ul class="mt-2" :class="listaHov" style="padding-left:0" v-if="nombrePatro.length > 0 ? mostrarListadoPatro=true : ''">-->
+            <ul class="mt-2" :class="mostrarListaPatrocinanteScroll" style="padding-left:0" v-if="mostrarListadoPatrocinante">
+            <li v-for="(item, index) in buscarPatrocinante" :key="index" @click="itemClicked(item)" class="list-group-item listLine" style="cursor:pointer;">
+              <span>{{ item.rut }}-{{ item.dv }}</span><br>
+              <span>{{ item.nombre }} {{ item.apePat }}</span><br>
+              <span>{{ item.camara }}</span>
+            </li>
+          </ul>
+</div>
 
-        <div class="creacion-solicitud__buttons py-5 my-5">
-          <a href="ingreso-y-consulta.html" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
-          <router-link to="/persona-juridica-formulario-4" class="btn btn-primary btn--big m-2"><i
-              class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</router-link>
-          <router-link to="/persona-juridica-formulario-6" class="btn btn-primary btn--big m-2">Siguiente <i
-              class="fas fa-long-arrow-alt-right fa-lg"></i></router-link>
-        </div> <!-- creacion-solicitud__buttons -->
-      </div> <!-- container -->
+<div class="col-lg-6">
+  <label class="patrocinante__label text-small font-weight-bold" for="rut1"><i id="AyudaPatrocinante1" @click="showAyudaPatrocinador()" class="fas fa-question-circle question-icon"></i>Representante del Socio*</label>  
+<input type="text" class="patrocinante__input form-control" v-model="nombrePatrocinador" @click="getListarPatrocinador">
+<input type="text" class="patrocinante__input form-control" v-model="perIdPatrocinador" style="display:none;">
+          <!--<ul class="mt-2" :class="listaHov" v-if="nombrePatrocinador.length > 0 ? mostrarListadoPatro=true : ''">-->
+            <ul class="mt-2" :class="mostrarListaPatrocinadorScroll" style="padding-left:0" v-if="mostrarListadoPatrocinador">
+            <li v-for="(item, index) in buscarPatrocinador" :key="index" @click="itemClickedPatrocinador(item)" class="list-group-item listLine" style="cursor:pointer;">
+              <span>{{ item.rut }}-{{ item.dv }}</span><br>
+              <span>{{ item.nombre }} {{item.apePat}}</span>
+              <span>{{ item.camara }}</span>
+            </li>
+          </ul>
+</div>
+  </div>
+<br>
+  <div class="row" @click="cerrarScrollPostulacion">
+    <div class="col-lg-6">
+      <a href="" download class="patrocinante__download">
+              <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
+              <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
+            </a>
+            <div class="patrocinante__attachment pt-2">
+              <input type="file" class="d-none" id="respaldo" required>
+              <label for="respaldo" class="d-flex patrocinante__attachment-label">
+                <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
+                  <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
+                </div>
+                <div class="btn--hover-right">
+                  <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
+                  <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
+                    gremio</p>
+                </div>
+              </label>
+            </div>
+    </div>
+  </div>
+</form>
+
+<form class="pt-3">
+  <div class="row">
+<div class="col-lg-6">
+<label class="patrocinante__label text-small font-weight-bold" for="rut1"><i id="AyudaPatrocinante1" @click="showAyuda()" class="fas fa-question-circle question-icon"></i> Socio Patrocinante 2*</label>  
+<input type="text" class="patrocinante__input form-control" v-model="nombrePatrocinante2"  @click="getListarPatrocinante2">
+<input type="text" class="patrocinante__input form-control" v-model="perIdPatrocinante2" style="display:none;">
+         <!-- <ul class="mt-2" :class="listaHov" style="padding-left:0" v-if="nombrePatro.length > 0 ? mostrarListadoPatro=true : ''">-->
+            <ul class="mt-2" :class="mostrarListaPatrocinanteScroll2" style="padding-left:0" v-if="mostrarListadoPatrocinante2">
+            <li v-for="(item, index) in buscarPatrocinante2" :key="index" @click="itemClicked2(item)" class="list-group-item listLine" style="cursor:pointer;">
+              <span>{{ item.rut }}-{{ item.dv }}</span><br>
+              <span>{{ item.nombre }} {{ item.apePat }}</span><br>
+              <span>{{ item.camara }}</span>
+            </li>
+          </ul>
+</div>
+
+<div class="col-lg-6">
+  <label class="patrocinante__label text-small font-weight-bold" for="rut1"><i id="AyudaPatrocinante1" @click="showAyudaPatrocinador()" class="fas fa-question-circle question-icon"></i>Representante del Socio*</label>  
+<input type="text" class="patrocinante__input form-control" v-model="nombrePatrocinador2" @click="getListarPatrocinador2">
+<input type="text" class="patrocinante__input form-control" v-model="perIdPatrocinador2" style="display:none;">
+          <!--<ul class="mt-2" :class="listaHov" v-if="nombrePatrocinador.length > 0 ? mostrarListadoPatro=true : ''">-->
+            <ul class="mt-2" :class="mostrarListaPatrocinadorScroll2" style="padding-left:0" v-if="mostrarListadoPatrocinador2">
+            <li v-for="(item, index) in buscarPatrocinador2" :key="index" @click="itemClickedPatrocinador2(item)" class="list-group-item listLine" style="cursor:pointer;">
+              <span>{{ item.rut }}-{{ item.dv }}</span><br>
+              <span>{{ item.nombre }} {{item.apePat}}</span>
+              <span>{{ item.camara }}</span>
+            </li>
+          </ul>
+</div>
+  </div>
+<br>
+  <div class="row"  @click="cerrarScrollPostulacion">
+    <div class="col-lg-6">
+      <a href="" download class="patrocinante__download">
+              <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
+              <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
+            </a>
+            <div class="patrocinante__attachment pt-2">
+              <input type="file" class="d-none" id="respaldo" required>
+              <label for="respaldo" class="d-flex patrocinante__attachment-label">
+                <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
+                  <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
+                </div>
+                <div class="btn--hover-right">
+                  <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
+                  <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
+                    gremio</p>
+                </div>
+              </label>
+            </div>
+    </div>
+  </div>
+</form> 
+
+ <!--<form class="d-grid patrocinante__form pt-3">
+            <label class="patrocinante__label text-small font-weight-bold" for="rut1">RUT*</label>-->
+            <!--<suggestions
+    v-model="query"
+    :options="options"
+    :onInputChange="onCountryInputChange"
+    :onItemSelected="onSearchItemSelected"
+    ></suggestions>-->
+        <!--  <input type="text" placeholder="Buscar" class="patrocinante__input form-control" v-model="nombrePatro">
+          <ul class="patrocinante__attachment pt-2" style="width:27%;" v-if="nombrePatro.length > 0 ? mostrarListadoPatro=true : ''">
+            <li v-for="(item, index) in buscarPatrocinante" :key="index" @click="itemClicked(item)" class="list-group-item" style="cursor:pointer;">
+              <span>{{ item.rut }}-{{ item.dv }}</span><br>
+              <span>{{ item.nombre }}</span>
+              <span>{{ item.camara }}</span>
+            </li>
+          </ul>-->
+            <!--<input id="rut1" class="patrocinante__input form-control" required>-->
+            <!--<label class="patrocinante__label text-small font-weight-bold" for="patrocinante1">Patrocinante 1*</label>
+            <input id="patrocinante1" class="patrocinante__input form-control" required>
+            <label class="patrocinante__label text-small font-weight-bold" for="patrocinador1">Patrocinador*</label>
+            <select id="patrocinador1" class="patrocinante__input form-control" required></select>
+            <a href="" download class="patrocinante__download">
+              <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
+              <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
+            </a>
+            <div class="patrocinante__attachment pt-2">
+              <input type="file" class="d-none" id="respaldo" required>
+              <label for="respaldo" class="d-flex patrocinante__attachment-label">
+                <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
+                  <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
+                </div>
+                <div class="btn--hover-right">
+                  <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
+                  <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
+                    gremio</p>
+                </div>
+              </label>
+            </div>
+          </form>-->
+
+          <!--<form class="d-grid patrocinante__form pt-5">
+            <label class="patrocinante__label text-small font-weight-bold" for="rut2">RUT*</label>
+            <input id="rut2" class="patrocinante__input form-control" required>
+            <label class="patrocinante__label text-small font-weight-bold" for="patrocinante2">Patrocinante 2*</label>
+            <input id="patrocinante2" class="patrocinante__input form-control" required>
+            <label class="patrocinante__label text-small font-weight-bold" for="patrocinador2">Patrocinador*</label>
+            <select id="patrocinador2" class="patrocinante__input form-control" required></select>
+            <a href="" download class="patrocinante__download">
+              <img src="@/assets/images/mas.png" alt="Descargar formulario" width="33px" class="btn--sibling-hover-right">
+              <span class="font-weight-bold text-small pl-1 btn--hover-right">Descargar formulario</span>
+            </a>
+            <div class="patrocinante__attachment pt-2">
+              <input type="file" class="d-none" id="respaldo" required>
+              <label for="respaldo" class="d-flex patrocinante__attachment-label">
+                <div class="patrocinante__attachment-icon-container mr-2 btn--sibling-hover-right">
+                  <img src="@/assets/images/mas.png" alt="Adjuntar respaldo de patrocinante" width="33px">
+                </div>
+                <div class="btn--hover-right">
+                  <p class="text-small font-weight-bold">Adjuntar respaldo de patrocinante*</p>
+                  <p class="text-small text-muted">De donde conoce al postulante, Trayectoria del postulante, Aporte al
+                    gremio</p>
+                </div>
+              </label>
+            </div>
+          </form>-->
+        </div> <!-- col-md-6 -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-sm-3 col-md-3 col-lg-5"  @click="cerrarScrollPostulacion">
+        </div> <!-- col-md-6 -->
+      </div> <!-- row -->
+
+       <div class="creacion-solicitud__buttons py-5 mt-5">
+        <button @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</button>
+        <button @click="frm4" class="btn btn-primary btn--big m-2"><i
+            class="fas fa-long-arrow-alt-left fa-lg"></i>Anterior</button>
+        
+        <button @click="siguiente5" class="btn btn-primary btn--big m-2">Siguiente<i
+            class="fas fa-long-arrow-alt-right fa-lg"></i></button>
+      </div>  <!-- creacion-solicitud__buttons -->
+
+    </div> <!-- container -->
+
 
       <!-- Formulario 6 -->
       <div class="container">
@@ -1205,7 +1556,7 @@
                               haven't heard of them accusamus labore sustainable VHS.
                               <div class="compromisos__input pt-5">
                                 <div class="custom-control custom-checkbox">
-                                  <input type="checkbox" class="custom-control-input" id="leido1" required>
+                                  <input type="checkbox" v-model="terms" class="custom-control-input" id="leido1" required>
                                   <label class="custom-control-label font-weight-bold pt-1" for="leido1">He leído las
                                     condiciones y
                                     términos de la CCHC</label>
@@ -1234,7 +1585,7 @@
                               haven't heard of them accusamus labore sustainable VHS.
                               <div class="compromisos__input pt-5">
                                 <div class="custom-control custom-checkbox">
-                                  <input type="checkbox" class="custom-control-input" id="leido2" required>
+                                  <input type="checkbox" v-model="terms2" class="custom-control-input" id="leido2" required>
                                   <label class="custom-control-label font-weight-bold pt-1" for="leido2">He leído las
                                     condiciones y
                                     términos de la CCHC</label>
@@ -1263,7 +1614,7 @@
                               haven't heard of them accusamus labore sustainable VHS.
                               <div class="compromisos__input pt-5">
                                 <div class="custom-control custom-checkbox">
-                                  <input type="checkbox" class="custom-control-input" id="leido3" required>
+                                  <input type="checkbox" v-model="terms3" class="custom-control-input" id="leido3" required>
                                   <label class="custom-control-label font-weight-bold pt-1" for="leido3">He leído las
                                     condiciones y
                                     términos de la CCHC</label>
@@ -1304,7 +1655,7 @@
               </div> <!-- col-md-6 -->
             </div> <!-- row -->
             <div class="d-flex justify-content-center pt-5">
-              <button class="btn btn--big btn--submit text-white text-uppercase">Enviar postulación</button>
+              <button :disabled="isDisabled" class="btn btn--big btn--submit text-white text-uppercase" @click="enviarPostulacion()">Enviar postulación</button>
             </div>
           </form>
 
@@ -1331,6 +1682,9 @@
   import moment from "moment";
   import { es } from 'vuejs-datepicker/dist/locale'
   import VeeValidate, { Validator } from "vee-validate";
+  import FileUpload from 'v-file-upload'
+
+  Vue.use(FileUpload)
   // Indicar uso de idioma español
   Validator.localize("es", es);
   
@@ -1356,20 +1710,53 @@
     },
   data () {
     return {
+      percent: 0,
+      message: "",
+      name: 'my-component',
       //rutNoValido: true,
+      url: 'http://postulacion.isc.cl/uploadFile/',
+      headers: {'access-token': 'Access-Control-Allow-Origin: *'},
       es: es,
       language: "es",
+      //trabajadores : administrativos,
       date: new Date(),
       format: 'dd-MM-yyyy',
       disabledDates:{
       from: new Date() //Deshabilita fechas futuras
       },
+
+
+      listaGente:[
+      {
+      id:'1',
+      nombre:'Leo',
+      rut:'1',
+      razon: 'Leonardo C.A',
+      editing: false
+      },
+      {
+      id:'2',
+      nombre:'Gaby',
+      rut:'2',
+      razon:'Gabriela C.A',
+      editing: false
+      },
+      {
+        id:'3',
+        nombre:'Gene',
+        rut:'3',
+        razon: 'Genesis C.A',
+        editing: false
+      }
+      ],
+
+
      personaJuridica:[{
        datosPersonales:{
 
        },
        informacionComercial:{
-
+          
        },
        composicion:{
 
@@ -1387,25 +1774,31 @@
      }],
 
      // Data Form 1
+     file: "",
+     disabled: false,
+     disabledTwo: false,
      array:[],
-     files:[],
+     files:'',
      listadoRegiones:[],
      provincias:[],
      provinciaSeleccionada:'',
      regionSeleccionada:'',
-    comunas:[],
-      comunaSeleccionada:'',
+     comunas:[],
+     comunaSeleccionada:'',
+     file: '',
      selectedFile: [],
      selectedFileTM: [],
      selectedFileCV: [],
      selectedFileSRL: [],
      selectedFileSA: [],
      actividades:[],
+     giros:[],
+     categorias:[],
      rut:'',
      fantasyName:'',
      razonSocial:'',
      date:'',
-     giro:'',
+     giroModel:'',
      activity:'',
      category:'',
      image: '',
@@ -1429,14 +1822,125 @@
         }
       ],
      reg: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
-     website: ''
+     website: '',
+     trabajadores: '',
+      administrativos:'',
+      tecnicos:'',
+      profesionales:'',
+      balance: [],
+      impuestoRenta: [],
+      patrimonio: '',
+      capitalPropio: [],
+      facturacion: [],
+      volumenFacturado: '',
+
+      rangos: '',
+
+     //Composición Accionaria Data
+     rutComp:'',
+      razonSocialComp:'',
+      porcentaje:0,
+      composicion:[],
+      formRegistrarPersona: false,
+      disabled: 0,
+      encuentra:'',
+      editPor: false,
+      respuesta: false,
+
+      //Data para Patrocinantes
+       patrocinantes:[],
+       patrocinadores:[],
+       patrocinantes2:[],
+       patrocinadores2:[],
+       nombrePatro:'',
+       nombrePatrocinador:'',
+       mostrarListadoPatrocinante: false,
+       mostrarListadoPatrocinador: false,
+       mostrarListadoPatrocinante2: false,
+       mostrarListadoPatrocinador2: false,
+       patrocinanteSelec:'',
+       patrocinadorSelec:'',
+       patrocinanteSelec2:'',
+       patrocinadorSelec2:'',
+       mostrarListaPatrocinanteScroll:'listaHov',
+       mostrarListaPatrocinadorScroll:'listaHov',
+       mostrarListaPatrocinanteScroll2:'listaHov',
+       mostrarListaPatrocinadorScroll2:'listaHov',
+       nombrePatrocinante2:'',
+       nombrePatrocinador2:'',
+       perIdPatrocinante:'',
+       perIdPatrocinador:'',
+       perIdPatrocinante2:'',
+       perIdPatrocinador2:'',
+
+      //Data Compromisos
+      terms: false,
+      terms2: false,
+      terms3: false,
+      msgTerm: true
     }
+  },
+
+  mounted: function () {
+    console.log("mounted...");
   },
 
   methods:{
 
     ...mapMutations(['frmDatosPrincipales','frmInformacionComercial','frmComposicionAccionaria', 
                      'frmParticipacionCCHC','frmPatrocinantes','frmCompromisos']),
+
+    uploadFile: function(){
+
+       this.file = this.$refs.file.files[0];
+
+       let formData = new FormData();
+       formData.append('file', this.file);
+
+       axios.post('http://postulacion.isc.cl/listarActividad', formData,
+       {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+       })
+       .then(function (response) {
+
+          if(!response.data){
+             alert('File not uploaded.');
+          }else{
+             alert('File uploaded successfully.');
+          }
+
+       })
+       .catch(function (error) {
+           console.log(error);
+       });
+
+     },
+
+     upload: function(){
+          var _this = this;
+          var elmnt = document.getElementById("fileToUpload1");
+          console.log(elmnt.files[0]);
+          var fd = new FormData();
+
+          fd.append("fileToUpload", elmnt.files[0], elmnt.files[0].name)
+
+          axios.post("http://postulacion.isc.cl/uploadfile.php", fd, {
+            onUploadProgress: function(uploadEvent){
+                
+                _this.percent = Math.round((uploadEvent.loaded / uploadEvent.total)*100);
+              }
+            })
+            .then(function(res){
+              console.log(res);
+              _this.message = res.data.message;
+            })
+            .catch(function(e){
+              console.log(e);
+            });
+        },
+
     onFileSelected(event) {
       this.selectedFile = event.target.files
     },
@@ -1455,13 +1959,57 @@
     onFileChanged (event) {
       const file = event.target.files[0]
     },
-    onUpload() {
+    /*onUpload() {
       const fd = new FormData();
+      var header = "Access-Control-Allow-Origin: *"
       fd.append('file', this.selectedFile)
-      axios.post('http://socios.isc.cl/files/documents', fd)
+      axios.post('https://console.firebase.google.com/u/0/project/vuesaya/database/vuesaya/data~2F/', fd, header)
       .then(res => {
         console.log(res)
       });
+    },*/
+
+    siguiente(){
+      /*this.$validator.validate()
+        .then(esValido => {
+          if (esValido) {*/
+
+            this.guardar();
+            this.frmInformacionComercial();
+            console.log("Puede Pasar");
+
+          /*} else {
+            alert("Debe llenar campos requeridos");
+          }
+        });  */
+    }, 
+
+    onUploadNew() {
+      this.file = this.$refs.file.files[0];
+      let formData = new FormData();
+      formData.append('file', this.file);
+      var header = "Access-Control-Allow-Origin: *"
+      //fd.append('file', this.selectedFile)
+      axios.post('http://postulacion.isc.cl/api.php',
+          formData,
+          {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+        }
+      ).then(function(data){
+        console.log(data.data);
+      })
+      .catch(function(){
+        console.log('FAILURE!!');
+      });
+    },
+    thumbUrl (file) {
+      return file.myThumbUrlProperty
+    },
+    onNewFile (file) {
+      // Handle files like:
+      this.selectedFile = file
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -1511,6 +2059,26 @@
     removeEmail(index) {
       this.inputsEmail.splice(index, 1);
     },
+    onChangeFileUpload(){
+      //this.file = this.$refs.file.file[0];;
+    },
+
+    onFileSelectedTest (event) {
+       const file = event.target.files[0];
+       const formData = new FormData();
+       formData.append("my-file", file);
+       Vue.http.post('http:/postulacion.isc.cl/listarActividad', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+       })
+        .then(res => {
+            //todo ok
+        },
+        error => {
+            //todo mal :P
+        })
+    },
     getListadoRegion: function(){
       Vue.axios.get('http://postulacion.isc.cl/listarRegion').then((response) => {
         console.log(response);
@@ -1526,7 +2094,6 @@
         this.provincias = response.data;
         console.log(this.provincias);
       })
-    
     },
 
     getListadoComuna: function(){
@@ -1539,19 +2106,290 @@
     
     },
 
+    getListadoGiro: function(){
+      Vue.axios.get('http://postulacion.isc.cl/listarGiro').then((response) => {
+        this.giros = response.data;
+        console.log(this.giros);
+      })
+    
+    },
+
+    getListadoCategoria: function(){
+      Vue.axios.get('http://postulacion.isc.cl/listarCategoria').then((response) => {
+        this.categorias = response.data;
+        console.log(this.categorias);
+      })
+    
+    },
+
     isEmailValid: function() {
       return (this.emails == "")? "" : (this.reg.test(this.emails)) ? 'has-success' : 'has-error';
     },
+
+    //Composición Accionaria Methods
+    editarPorcentaje: function (indice){
+
+      this.showModalEditar();
+      this.porcentaje = this.composicion[indice].porcentaje;
+      this.rutComp = this.composicion[indice].rutComp;
+      this.disabled = 1;
+      this.editPor = true;
+      
+     
+    },
+    eliminarComposicion: function (indice){
+      if(this.respuesta == true){
+        this.composicion.splice(indice, 1);
+        this.rutComp = '';
+        this.razonSocial = '';
+        this.porcentaje = '';
+        this.disabled = 0;
+      }else{
+        this.showModalEliminar();
+        
+      }
+    },
+    showModalCrear(){
+      this.$refs['modal-crear'].show();
+    },
+
+    aceptarCreacion(){
+       this.formRegistrarPersona = true;
+       this.$refs['modal-crear'].hide();
+    },
+
+    cancelarCreacion(){
+        this.formRegistrarPersona = false;
+        this.rutComp = '';
+        this.razonSocialComp = '';
+        this.porcentaje = '';
+        this.disabled = 0;
+        this.$refs['modal-crear'].hide();
+
+      },
+
+    showModalEliminar(){
+          this.$refs['modal-eliminar'].show();
+    },
+
+    aceptarEliminacion(){
+          this.$refs['modal-eliminar'].hide();
+          this.respuesta = true;
+          this.eliminarComposicion();
+    },
+
+    cancelarEliminacion(){
+        this.$refs['modal-eliminar'].hide();
+        this.respuesta = false;
+
+      },
+
+    showModalEditar() {
+        this.$refs['modal-editar'].show();
+    },
+
+    aceptarEdicion(){
+          this.$refs['modal-editar'].hide();
+          this.setFocus();
+    },
+
+    cancelarEdicion(){
+        this.$refs['modal-editar'].hide();
+        this.rutComp = '';
+        this.razonSocialComp = '';
+        this.porcentaje = '';
+        this.disabled = 0;
+        this.editPor = false;
+
+    },
+
+    okAyuda(){
+      this.$refs['modal-ayuda-patrocinante'].hide();
+    },
+
+    showAyuda(){
+      this.$refs['modal-ayuda-patrocinante'].show();
+    },
+
+    okAyudaPatrocinador(){
+      this.$refs['modal-ayuda-patrocinador'].hide();
+    },
+
+    showAyudaPatrocinador(){
+      this.$refs['modal-ayuda-patrocinador'].show();
+    },
+
+    setFocus(){
+        this.$refs.porcentaje.focus();
+    },
+
+    enviarPostulacion: function(){
+        this.guardar();
+        let obj = JSON.stringify(this.personaNatural);
+    //console.log(obj);
+        Vue.axios.post('http://postulacion.isc.cl/personaNatural', obj).then((response) => {
+          alert("Postulacion Enviada");
+          console.log(response.data);
+          //console.log(response);
+         
+        }).catch(function (error) {
+          console.log("AXIOS ERROR: ", error);
+          });
+
+    },
+
+    sendFile: function() {
+      let obj = JSON.stringify(this.personaJuridica);
+      console.log(obj);
+    },
+
+    itemClicked(item) {
+      console.log(item.perId);
+      this.patrocinanteSelec = item.perId;
+      this.perIdPatrocinante = item.perId;
+      this.nombrePatro = item.nombre + ' ' + item.rut + '-' + item.dv + ' ' + item.camara;
+      this.mostrarListaPatrocinanteScroll = 'listaHovHidden';
+   },
+
+    itemClicked2(item) {
+       //console.log(item.perId);
+        
+        
+        if(this.patrocinanteSelec != item.perId){
+          this.patrocinanteSelec2 = item.perId;
+          this.perIdPatrocinante2 = item.perId;
+          this.nombrePatrocinante2 = item.nombre + ' ' + item.rut + '-' + item.dv + ' ' + item.camara;
+          this.mostrarListaPatrocinanteScroll2 = 'listaHovHidden';
+        }else{
+          alert("No puede ser el mismo patrocinante");
+          this.mostrarListadoPatrocinante2=false;
+          this.nombrePatrocinante2 = '';
+        }
+        
+    },
+
+ itemClickedPatrocinador(item) {
+   console.log(item.perId);
+   
+    this.patrocinadorSelec = item.perId;
+    this.perIdPatrocinador = item.perId;
+    this.nombrePatrocinador = item.nombre + ' ' + item.apePat + ' ' + item.rut + '-' + item.dv;
+    this.mostrarListaPatrocinadorScroll = 'listaHovHidden'; 
+   
+    
+        
+ },
+
+ itemClickedPatrocinador2(item) {
+   console.log(item.perId);
+    this.patrocinadorSelec2 = item.perId;
+    this.perIdPatrocinador2 = item.perId;
+    this.nombrePatrocinador2 = item.nombre + ' ' + item.apePat + ' ' + item.rut + '-' + item.dv;
+    this.mostrarListaPatrocinadorScroll2 = 'listaHovHidden'; 
+        
+ },
+ 
+
+    getListarPatrocinante: function(){
+      console.log('Buscando...');
+      Vue.axios.get('http://postulacion.isc.cl/listarPatrocinante').then((response) => {
+      this.patrocinantes = response.data;
+      });
+      this.mostrarListaPatrocinanteScroll='listaHov';
+      this.mostrarListaPatrocinadorScroll='listaHovHidden';
+      this.mostrarListadoPatrocinante=true;
+      this.nombrePatrocinador='';
+      this.mostrarListadoPatrocinador=false;
+
+    },
+
+    getListarPatrocinante2: function(){
+      console.log('Buscando...');
+      Vue.axios.get('http://postulacion.isc.cl/listarPatrocinante').then((response) => {
+      this.patrocinantes2 = response.data;
+      });
+
+      this.mostrarListaPatrocinanteScroll2='listaHov';
+      this.mostrarListaPatrocinadorScroll2='listaHovHidden';
+      this.mostrarListadoPatrocinante2=true;
+      this.nombrePatrocinador2='';
+      this.mostrarListadoPatrocinador2=false;
+
+    },
+
+    getListarPatrocinador: function(){
+      console.log("Buscando Patrocinador...");
+      let idPatrocinante = this.patrocinanteSelec;
+
+      if(idPatrocinante !='' && this.nombrePatro !=''){
+
+      Vue.axios.get('http://postulacion.isc.cl/listarPatrocinador/'+idPatrocinante).then((response) => {
+      this.patrocinadores = response.data;
+      }).catch(function (error) {
+        // handle error
+      console.log(error);
+      });
+
+      this.mostrarListaPatrocinadorScroll='listaHov';
+      this.mostrarListaPatrocinanteScroll='listaHovHidden';
+      this.mostrarListadoPatrocinador=true;
+      this.mostrarListadoPatrocinante=false;
+
+      }else{
+        console.log("Debe introducir un patrocinante");
+        this.mostrarListadoPatrocinador=false;
+        this.mostrarListaPatrocinadorScroll='listaHovHidden';
+      }
+      
+
+    },
+
+    getListarPatrocinador2: function(){
+      console.log("Buscando Patrocinador2...");
+      let idPatrocinante = this.patrocinanteSelec2;
+
+      if(idPatrocinante !='' && this.nombrePatrocinante2 !=''){
+
+      Vue.axios.get('http://postulacion.isc.cl/listarPatrocinador/'+idPatrocinante).then((response) => {
+      this.patrocinadores2 = response.data;
+      this.mostrarListaPatrocinadorScroll2='listaHov';
+      this.mostrarListaPatrocinanteScroll2='listaHovHidden';
+      this.mostrarListadoPatrocinador2=true;
+      this.mostrarListadoPatrocinante2=false;
+      }).catch(function (error) {
+        // handle error
+      console.log(error);
+      });
+
+      }else{
+        console.log("Debe introducir un patrocinante");
+        this.mostrarListadoPatrocinador2=false;
+        this.mostrarListaPatrocinadorScroll2='listaHovHidden';
+      }
+      
+    },
+
+    cerrarScrollPostulacion(){
+      console.log("Le estoy dando click");
+      this.mostrarListadoPatrocinador2=false;
+      this.mostrarListadoPatrocinante2=false;
+      this.mostrarListadoPatrocinador=false;
+      this.mostrarListadoPatrocinante=false;
+    },
+
 
     guardar: function(){
 
       this.personaJuridica.push({
         datosPersonales:{
         rut: this.rut,
+        files: this.files,
         fantasyName: this.fantasyName,
         razonSocial: this.razonSocial,
+        razonSocialComp: this.razonSocialComp,
         date: this.date,
         giro: this.giro,
+        giros: this.giros,
         activity: this.activity,
         category: this.category,
         image: this.image,
@@ -1571,16 +2409,128 @@
         telefonosArray: this.telefonosArray,
         emails: this.emails,
         website: this.website,
-        listadoRegiones: this.listadoRegiones
-        },
+        listadoRegiones: this.listadoRegiones,
+        profesionales: this.profesionales,
+        administrativos: this.administrativos,
+        tecnicos: this.tecnicos,
+        trabajadores: this.trabajadores,
+        balance: this.balance,
+        impuestoRenta: this.impuestoRenta,
+        patrimonio: this.patrimonio,
+        capitalPropio: this.capitalPropio,
+        facturacion: this.facturacion,
+        volumenFacturado: this.volumenFacturado,
+        rangos: this.rangos,
+      },
         
         direcciones:{
           calle:this.calle
           
+        },
+
+        composicion:{
+          com: this.composicion
         }
+
+
       });
 
-      console.log(this.personaJuridica[1]);
+
+
+      /*this.trabajadores.push({
+        values: {
+          administrativos: this.administrativos,
+          tecnicos: this.tecnicos,
+          profesionales: this.profesionales
+        }
+      });*/
+      this.sendFile();
+      console.log(this.personaJuridica);
+    },
+
+    buscar: function (indice){
+    
+      if(this.rutComp == ''){
+        alert("Debe llenar campo rut");
+      }else{
+          
+      for(var i=0; i< this.listaGente.length; i++){
+       
+      
+        if(this.listaGente[i].rut == this.rutComp){
+
+          this.razonSocialComp = this.listaGente[i].razon;
+          
+          this.encuentra = '';
+          let posi = '';
+          for(let k = 0; k < this.composicion.length; k++) {
+           
+            if (this.composicion[k].rutComp == this.rutComp) {
+              this.encuentra = this.rutComp;
+              posi = k;
+              break;
+            }
+            
+          }
+        
+        
+          if(this.editPor == true){
+
+
+            this.composicion.splice(posi, 1);
+
+              this.composicion.push({
+            rutComp: this.listaGente[i].rut,
+            nombre: this.listaGente[i].nombre,
+            porcentaje: this.porcentaje,
+            editing: this.listaGente[i].editing});
+           this.guardar();
+           this.editPor = false;
+
+          }else{
+
+          if(this.encuentra == ''){
+            this.composicion.push({
+            rutComp: this.listaGente[i].rut,
+            nombre: this.listaGente[i].nombre,
+            porcentaje: this.porcentaje,
+            editing: this.listaGente[i].editing
+
+          });
+
+           this.guardar();
+           this.editPor = false;
+          }else{
+
+
+              alert("El Rut " +this.rutComp+" ya exite");
+            this.razonSocialComp = '';
+          }  
+
+          
+
+          }
+            
+
+
+          this.formRegistrarPersona = false;
+          
+          this.disabled = 0;
+          this.rutComp = '';
+          //this.razonSocialComp = '';
+          this.porcentaje = '';
+         
+          return;
+        
+      }
+      
+      }   
+        this.showModalCrear();
+        
+            
+    }
+        
+      
     },
     // Valida el rut con su cadena completa "XXXXXXXX-X"
     validaRut: function(rutCompleto) {
@@ -1608,16 +2558,54 @@
     }
   },
   created: function(){
-    Vue.axios.get('http://postulacionms.isc.cl/listarActividad').then((response) => {
+    Vue.axios.get('http://postulacion.isc.cl/listarActividad').then((response) => {
         this.actividades = response.data;
         console.log(this.actividades);
     })
 
     this.getListadoRegion();
+    this.getListadoGiro();
+    this.getListadoCategoria();
+    this.isEmailValid();
   },
   computed:{
     ...mapState(['rutGlobal','pjform1', 'pjform2', 'pjform3',
-                 'pjform4','pjform5','pjform6']) 
+                 'pjform4','pjform5','pjform6']),
+
+    isDisabled: function(){
+    
+    if(this.terms==true && this.terms2==true && this.terms3==true){
+      this.msgTerm = false;
+      return false;
+    }
+      this.msgTerm = true;
+      return true; 
+    },
+
+    buscarPatrocinante: function () {
+      return this.patrocinantes.filter((item) => {
+                return item.nombre.toLowerCase().includes(this.nombrePatro.toLowerCase()) || 
+                item.rut.toLowerCase().includes(this.nombrePatro.toLowerCase());
+            });
+    },
+    buscarPatrocinante2: function () {
+      return this.patrocinantes2.filter((item) => {
+                return item.nombre.toLowerCase().includes(this.nombrePatrocinante2.toLowerCase()) || 
+                item.rut.toLowerCase().includes(this.nombrePatrocinante2.toLowerCase());
+            });
+    },
+    buscarPatrocinador: function () {
+      return this.patrocinadores.filter((item) => {
+                return item.nombre.toLowerCase().includes(this.nombrePatrocinador.toLowerCase()) || 
+                item.rut.toLowerCase().includes(this.nombrePatrocinador.toLowerCase());
+            });
+    },
+    buscarPatrocinador2: function () {
+      return this.patrocinadores2.filter((item) => {
+                return item.nombre.toLowerCase().includes(this.nombrePatrocinador2.toLowerCase()) || 
+                item.rut.toLowerCase().includes(this.nombrePatrocinador2.toLowerCase());
+            });
+    } 
   }
 }
 </script>
