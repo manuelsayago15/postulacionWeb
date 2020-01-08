@@ -71,15 +71,29 @@
                   </div>
                 </form>
               </div> <!-- col-lg-7 -->
-              TEST
-              <h1>Normal file upload</h1>
-              <form action="http://postulacion.isc.cl/uploadfile" method="post" enctype="multipart/form-data">
+              <!--<form action="#" method="post" enctype="multipart/form-data">
                 <label>Select File</label>
                 <input type="file" name="fileToUpload" id="fileToUpload"> <br> <br>
-                <button type="submit">Upload Now</button>
+                <input type="button" class="btn btn-primary upload" value="Subir">
                 
-              </form>
-              <br><hr><br>
+              </form>-->
+
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <!--<br><hr><br>
               <h1>File upload with progressbar</h1>
 
               <label>Select File</label>
@@ -88,7 +102,7 @@
               <br><br>
               {{message}} 
               <br><br>
-              <button @click="upload();">Upload Now</button>
+              <button @click="upload();">Upload Now</button>-->
 
               <div class="col-lg-5 d-flex flex-column">
                 <div class="info-empresa__img-icon">
@@ -121,6 +135,9 @@
                 </template>-->
 
                 <form class="info-empresa-attachment__form d-flex flex-column align-items-center py-2">
+                   <template v-if="selectedFileTM.length == 0">
+                      <input type="file" name="Modificaciones" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
+                    </template>
                   <div>
                     <!--<input type="file" id="escritura" class="d-none" required>-->
                     <!-- Escritura constitución -->
@@ -140,6 +157,7 @@
                       {{errors.first('selectedFile')}}
                     </div>
                     <template v-if="selectedFile.length == 0">
+                      <p>test</p>
                       <input name="Escritura" type="file" v-validate="'required'" id="escritura" class="d-none" required @change="onFileSelected">
                       
                       <!--<select>
@@ -150,6 +168,7 @@
                       {{this.selectedFile[0].name}}-->
                     </template>
                     <template v-else>
+                      <p>else</p>
                       <button @click="onUploadNew">Upload!</button>
                       <span v-for="(file, key) in selectedFile" :value="selectedFile" :key="key">
                         Archivo seleccionado: {{ file.name }}
@@ -1682,9 +1701,7 @@
   import moment from "moment";
   import { es } from 'vuejs-datepicker/dist/locale'
   import VeeValidate, { Validator } from "vee-validate";
-  import FileUpload from 'v-file-upload'
 
-  Vue.use(FileUpload)
   // Indicar uso de idioma español
   Validator.localize("es", es);
   
@@ -1918,7 +1935,7 @@
 
      },
 
-     upload: function(){
+     /*upload: function(){
           var _this = this;
           var elmnt = document.getElementById("fileToUpload1");
           console.log(elmnt.files[0]);
@@ -1939,10 +1956,10 @@
             .catch(function(e){
               console.log(e);
             });
-        },
+        },*/
 
     onFileSelected(event) {
-      this.selectedFile = event.target.files
+      this.selectedFile = event.target.files[0]
     },
     onFileSelectedCV(event) {
       this.selectedFileCV = event.target.files
@@ -1990,7 +2007,7 @@
       formData.append('file', this.file);
       var header = "Access-Control-Allow-Origin: *"
       //fd.append('file', this.selectedFile)
-      axios.post('http://postulacion.isc.cl/api.php',
+      axios.post('http://postulacion.isc.cl/uploadfile',
           formData,
           {
           headers: {
@@ -2608,6 +2625,40 @@
     } 
   }
 }
+
+$(document).ready(function() {
+    $(".upload").on('click', function() {
+        $(".upload-msg").text('Cargando...');
+        alert("Subiendo archivo");
+        var inputFileImage = document.getElementById("fileToUpload");
+        var file = inputFileImage.files[0];
+        var data = new FormData();
+        data.append('fileToUpload',file);
+        
+        /*jQuery.each($('#fileToUpload')[0].files, function(i, file) {
+          data.append('file'+i, file);
+        });*/
+              
+        $.ajax({
+          url: "http://postulacion.isc.cl/uploadfile",        // Url to which the request is send
+          type: "POST",             // Type of request to be send, called as method
+          data: data,         // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+          contentType: false,       // The content type used when sending data to the server.
+          cache: false,             // To unable request pages to be cached
+          processData:false,        // To send DOMDocument or non processed data file it is set to false
+          success: function(data)   // A function to be called if request succeeds
+          {
+            $(".upload-msg").html(data);
+            window.setTimeout(function() {
+            $(".alert-dismissible").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove();
+            }); }, 5000);
+          }
+        });
+    });
+});
+
+
 </script>
 <style type="text/css">
 
