@@ -56,7 +56,7 @@
 	import personaJuridicaForm from '@/components/personaJuridica/persona-juridica-form'
 	import { mapState, mapMutations } from 'vuex'
   export default {
-   name: 'header',
+   name: 'cabecera',
    components: {
    	personaJuridicaForm
    },

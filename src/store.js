@@ -2,9 +2,10 @@
 
 import Vue from 'vue'
 import Vuex from 'vuex'
+//import axios from 'axios'
 
 Vue.use(Vuex)
-Vue.use(VueAxios, axios)
+//Vue.use(VueAxios, axios)
 
 export default new Vuex.Store({
   state: {
@@ -26,7 +27,7 @@ export default new Vuex.Store({
 
   mutations:{
 
-        frmDatosPrincipales(state){
+        form1(state){
 
             state.pjform1 = true;
             state.done1= 'header__progress-number-active';
@@ -39,7 +40,7 @@ export default new Vuex.Store({
              
         },
 
-        frmInformacionComercial(state){
+        form2(state){
             state.pjform1 = false;
             state.pjform2 = true;
             state.pjform3 = false;
@@ -55,7 +56,7 @@ export default new Vuex.Store({
             state.done6 = 'header__progress-number';
         },
 
-        frmComposicionAccionaria (state) {
+        form3 (state) {
             state.pnformulario1 = false;
             state.pnformulario2 = false;
             state.pnformulario3 = true;
@@ -71,7 +72,7 @@ export default new Vuex.Store({
             state.done6 = 'header__progress-number';
         },
 
-        frmParticipacionCCHC (state) {
+        form4 (state) {
             state.pjform1 = false;
             state.pjform2 = false;
             state.pjform3 = false;
@@ -87,7 +88,7 @@ export default new Vuex.Store({
             state.done6 = 'header__progress-number';
         },
 
-        frmPatrocinantes (state) {
+        form5 (state) {
             state.pjform1 = false;
             state.pjform2 = false;
             state.pjform3 = false;
@@ -103,7 +104,7 @@ export default new Vuex.Store({
             state.done6 = 'header__progress-number';
         },
 
-        frmCompromisos (state) {
+        form6 (state) {
             state.pjform1 = false;
             state.pjform2 = false;
             state.pjform3 = false;
