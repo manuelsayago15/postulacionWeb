@@ -77,6 +77,12 @@
                   <input type="button" class="btn btn-primary upload" value="Subir">
                 </form>
 
+                <form action="#" method="post" enctype="multipart/form-data">
+                  <label>Select File</label>
+                  <input type="file" name="fileToUpload" id="fileToUploadtm" v-validate="'required'"> <br> <br>
+                  <input type="button" class="btn btn-primary upload" value="Subir">
+                </form>
+
 
 
 
@@ -134,7 +140,7 @@
                       {{errors.first('selectedFile')}}
                     </div>
                     <template v-if="selectedFile.length == 0">
-                      <input type="file" v-validate="'required'" id="escritura" class="d-none" required @change="onFileSelected">
+                      <input type="file" v-validate="'required'" id="escritura" ref="file" class="d-none" required @change="onFileSelected">
                       
                       <!--<select>
                         <option v-for="(file, key) in selectedFile " :value="selectedFile" :key="key">{{ file.name }}</option>
@@ -144,10 +150,12 @@
                       {{this.selectedFile[0].name}}-->
                     </template>
                     <template v-else>
+                     
                       <span v-for="(file, key) in selectedFile" :value="selectedFile" :key="key">
                         Archivo seleccionado: {{ file.name }}
+                        <i @click="removeFile" style="color: red; max-width: 100%; cursor:pointer" class="fas fa-minus-circle"></i>
                       </span>
-                      <i @click="removeFile" style="color: red; max-width: 100%; cursor:pointer" class="fas fa-minus-circle"></i>
+                      
                       <button @click="onUpload">Upload!</button>
                     </template>
 
@@ -164,7 +172,7 @@
                       <input type="file" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
                     </template>
                     <template v-else>
-                      <input type="file" id="modificaciones" class="d-none" multiple required @change="onFileSelectedTM">
+                      <input type="file" id="modificaciones" class="d-none" ref="filetm" multiple required @change="onFileSelectedTM">
                       <span v-for="(file, key) in selectedFileTM " :value="selectedFileTM" :key="key">
                         Archivo seleccionado: {{ file.name }} {{key}}
                       <i @click="removeFileTM(key)" style="color: red; width: 15px; cursor:pointer" class="fas fa-minus-circle"></i>
@@ -352,7 +360,7 @@
         </div>
         <div class="creacion-solicitud__buttons py-5">
           <button @click="guardar" class="btn btn-danger btn--big m-2 upload">Guardar y cerrar</button>
-          <button class="btn btn-primary btn--big m-2 upload" @click="siguiente">Siguiente <i
+          <button class="btn btn-primary btn--big m-2" @click="siguiente">Siguiente <i
               class="fas fa-long-arrow-alt-right fa-lg"></i></button>
         </div>
       </div> <!-- container -->
@@ -457,9 +465,9 @@
         <div class="creacion-solicitud__buttons py-5">
           <button @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</button>
           <button @click="form1" class="btn btn-primary btn--big m-2"><i
-              class="fas fa-long-arrow-alt-left fa-lg" ></i> Anterior</button>
-          <button @click="siguiente2" class="btn btn-primary btn--big m-2">Siguiente<i
-            class="fas fa-long-arrow-alt-right fa-lg"></i></button>
+              class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
+          <button @click="siguiente2" class="btn btn-primary btn--big m-2">Siguiente <i
+              class="fas fa-long-arrow-alt-right fa-lg"></i></button>
         </div> <!-- creacion-solicitud__buttons -->
       </div>
 
@@ -480,67 +488,197 @@
         <div class="row">
 
           <!-- LEFT COLUMN -->
-          <div class="col-md-8 col-lg-6">
-            <h3 class="text-primary text-uppercase font-weight-bold">Composición accionaria</h3>
-            <form class="accionarios-participacion__form">
-              <label for="rut" class="accionarios-participacion__label text-small font-weight-bold">RUT</label>
-              <input id="rut" type="number" class="form-control accionarios-participacion__input">
-              <label for="name" class="accionarios-participacion__label text-small font-weight-bold">Nombre</label>
-              <input id="name" type="text" class="form-control accionarios-participacion__input">
-              <label for="porcentaje"
-                class="accionarios-participacion__label text-small font-weight-bold">Porcentaje</label>
-              <input id="porcentaje" type="number" class="form-control accionarios-participacion__input">
-              <button id="agregarDatosAccionario" class="btn--accionarios-participacion btn--hover-up"><img
-                  src="@/assets/images/mas.png" alt="Adjuntar declaración de impuestos a la renta" height="33px"></button>
-            </form>
+        <div class="col-md-7 col-lg-6">
+          <h3 class="text-primary text-uppercase font-weight-bold">Composición accionaria</h3>
+         <!--<form action="">
+            <div class="form-group">
+              <div class="row">
+               
 
-            <div class="table-responsive pt-3">
-              <table class="table table-sm table--blue-border">
-                <thead class="bg-primary text-white">
-                  <tr>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">RUT</th>
-                    <th scope="col">Porcentaje</th>
-                    <th scope="col"> </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Carlos Vandal</td>
-                    <td>12.345.689-k</td>
-                    <td>50%</td>
-                    <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Carlos Vandal</td>
-                    <td>12.345.689-k</td>
-                    <td>20%</td>
-                    <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Carlos Vandal</td>
-                    <td>12.345.689-k</td>
-                    <td>30%</td>
-                    <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                <div class="col-lg-4">
+                  <label for="rut" class="accionarios-participacion__label text-small font-weight-bold">RUT</label>
+                  <input v-model="rutComp" id="rut" :disabled="disabled == 1" type="text" class="form-control">
+                </div>
+
+                <div class="col-lg-4">
+                  <label for="porcentaje"
+                  class="accionarios-participacion__label text-small 
+                  font-weight-bold">Porcentaje</label>
+                  <input v-model="porcentaje" ref="porcentaje" 
+                  id="porcentaje" type="number" 
+                  class="form-control accionarios-participacion__input">
+                </div>
+
+                <div class="col-lg-4" style="padding-left:0%;">
+                <button type="button" 
+                class="btn--accionarios-participacion btn--hover-up" 
+                @click="buscar" style="margin-top:13%;"><img src="@/assets/images/mas.png"
+                alt="Adjuntar declaración de impuestos a la renta" 
+                height="33px"></button>
+                </div>
+
+              </div>
             </div>
-          </div> <!-- col-md-6 -->
+          </form>-->
+          <form class="accionarios-participacion__form accionarios-participacion__form--pnatural">
+            <label for="rut" class="accionarios-participacion__label text-small font-weight-bold">RUT</label>
+            <input v-model="rutComp" id="rut" :disabled="disabled == 1" type="text" class="form-control accionarios-participacion__input">
+            <label for="name" class="accionarios-participacion__label text-small font-weight-bold">Razón social</label>
+            <input v-model="razonSocial" id="name" :disabled="disabled == 1" type="text" class="form-control accionarios-participacion__input" readonly>
+            <label for="porcentaje"
+              class="accionarios-participacion__label text-small font-weight-bold">Porcentaje</label>
+            <input v-model="porcentaje" ref="porcentaje" id="porcentaje" type="number" class="form-control accionarios-participacion__input">
+            <button type="button" class="btn--accionarios-participacion btn--hover-up" @click="buscar"><img src="@/assets/images/mas.png"
+                alt="Adjuntar declaración de impuestos a la renta" height="33px"></button>
+          </form>
 
-          <!-- RIGHT COLUMN -->
-          <div class="col-md-4 col-lg-6">
-          </div> <!-- col-md-6 -->
-        </div> <!-- row -->
+          <div class="table-responsive pt-3">
+            <table class="table table-sm table--blue-border">
+              <thead class="bg-primary text-white">
+                <tr>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">RUT</th>
+                  <th scope="col">Porcentaje</th>
+                  <th scope="col"> </th>
+                </tr>
+              </thead>
+            <tbody v-for="(com, indice) in composicion" :key='indice'>
+                <tr>
+                  <td> {{com.nombre}} </td>
+                  <td>{{ com.rutComp }}-{{ com.dvComp }}</td>
+                  <td>{{ com.porcentaje }}%</td>
+                  <td><a @click="editarPorcentaje(indice)"><i class="fas fa-pencil-alt icon-edit"></i></a> <a @click="eliminarComposicion(indice)"><i class="fas fa-times-circle icon-delete"></i></a>
+                  </td>
+                 <!-- <td v-if="!com.editing">{{ com.porcentaje }}%</td>-->
+                 <!-- <td v-else style="text-align: center; width: 1%;"><input type="number" @keyup.enter="updateComposicion(indice)" v-model="porcentaje" class="edit-composicion">%</td>-->
+                  <!--<td><a @click="editarPorcentaje(indice)"><i class="fas fa-pencil-alt icon-edit"></i></a> <a @click="eliminarComposicion(indice)"><i class="fas fa-times-circle icon-delete"></i></a>
+                  </td>-->
+                </tr> 
+            <!--  <tbody v-for="item in searchGente">
+              <tr>
+                  <td> {{ item.nombre }} </td>
+                  <td>{{ item.rut }}</td>
+                  <td>{{ item.porcentaje }}%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr>  -->
+              <!--  <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>50%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr> 
+                <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>30%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Carlos Vandal</td>
+                  <td>12.345.689-k</td>
+                  <td>20%</td>
+                  <td><i class="fas fa-pencil-alt icon-edit"></i> <i class="fas fa-times-circle icon-delete"></i>
+                  </td>
+                </tr> -->
+              </tbody>
+            </table>
+          </div>
+        </div> <!-- col-md-6 -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="col-md-5 col-lg-6">
+          <div class="container">
+
+            <div>
+            <b-modal ref="modal-crear" hide-footer title="Crear Persona">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">La persona no existe ¿Desea crearlo?</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarCreacion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarCreacion()">No</b-button></div>
+            </b-modal>
+            </div>
+
+            <div>
+            <b-modal ref="modal-editar" hide-footer title="Editar Porcentaje">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">¿Seguro que desea editar el porcentaje con el RUT {{ rutComp }}</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarEdicion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarEdicion()">No</b-button></div>
+            </b-modal>
+            </div>
+
+            <div>
+            <b-modal ref="modal-eliminar" hide-footer title="Eliminar Persona">
+              <div class="d-block text-center">
+                <h3 style="padding:5%;">¿Seguro que desea eliminar a la persona con el RUT {{ rutComp }}?</h3>
+              </div>
+              <div class="d-block text-center">
+                <b-button size="sm" variant="primary" @click="aceptarEliminacion()">Si</b-button>
+                <b-button size="sm" variant="danger" @click="cancelarEliminacion()">No</b-button></div>
+            </b-modal>
+            </div>
+<form v-if="formRegistrarPersona">
+  <div class="row">
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="nombre">Nombre</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="nombre">RUT</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    </div>
+    <div class="row">
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="porcentaje">Porcentaje</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    <div class="col">
+      <label class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold" for="social">Razón Social</label>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+    </div>
+  <button type="submit" class="btn btn-primary" style="float:right; padding: 2% 5% 2% 5%; margin-top: 2%;">Crear</button>
+</form>
+              <!--<form class="personas-asociadas" v-if="formRegistrarPersona">
+                  <div class="personas-asociadas-form">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold"
+                      for="rut">RUT*</label>
+                    <input type="number" id="rut" class="personas-asociadas-form__input--left form-control" required>
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--right text-small font-weight-bold"
+                      for="vocativo">Nombres</label>
+                      <input type="text" id="nombres" class="personas-asociadas-form__input--right-big  form-control">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--left text-small font-weight-bold"
+                      for="porcentaje">Porcentaje</label>
+                    <input type="number" id="porcentaje" class="personas-asociadas-form__input--left-big  form-control">
+                    <label
+                      class="personas-asociadas-form__label personas-asociadas-form__label--right text-small font-weight-bold"
+                      for="razon-social">Razón Social</label>
+                    <input type="text" id="razon-social"
+                      class="personas-asociadas-form__input--right-big  form-control">
+                  
+                   
+                  </div>
+                </form>-->
+          </div>
+        </div> <!-- col-md-6 -->
+      </div> <!-- row -->
 
         <div class="creacion-solicitud__buttons py-5 mt-5">
           <a href="ingreso-y-consulta.html" @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
           <button @click="form2" class="btn btn-primary btn--big m-2"><i
               class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
-          <button class="btn btn-primary btn--big m-2 upload" @click="siguiente3">Siguiente<i
+          <button class="btn btn-primary btn--big m-2 upload" @click="siguiente3">Siguiente <i
               class="fas fa-long-arrow-alt-right fa-lg"></i></button>
         </div> <!-- creacion-solicitud__buttons -->
       </div> <!-- container -->
@@ -1149,7 +1287,7 @@
 
         <div class="creacion-solicitud__buttons py-5">
           <a href="ingreso-y-consulta.html" @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</a>
-          <button @click="form2" class="btn btn-primary btn--big m-2"><i
+          <button @click="form3" class="btn btn-primary btn--big m-2"><i
               class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
           <button @click="siguiente4" class="btn btn-primary btn--big m-2">Siguiente <i
               class="fas fa-long-arrow-alt-right fa-lg"></i></button>
@@ -1379,9 +1517,9 @@
        <div class="creacion-solicitud__buttons py-5 mt-5">
         <button @click="guardar" class="btn btn-danger btn--big m-2">Guardar y cerrar</button>
         <button @click="form4" class="btn btn-primary btn--big m-2"><i
-            class="fas fa-long-arrow-alt-left fa-lg"></i>Anterior</button>
+            class="fas fa-long-arrow-alt-left fa-lg"></i> Anterior</button>
         
-        <button class="btn btn-primary btn--big m-2" @click="siguiente5">Siguiente<i
+        <button class="btn btn-primary btn--big m-2" @click="siguiente5">Siguiente <i
             class="fas fa-long-arrow-alt-right fa-lg"></i></button>
       </div>  <!-- creacion-solicitud__buttons -->
 
@@ -1653,6 +1791,9 @@
      }],
 
      // Data Form 1
+     imagen: '',
+     files: '',
+     archivoExiste: true,
      before1: true,
      next1: true,
      next2: true,
@@ -1771,14 +1912,21 @@
 
     ...mapMutations(['form1','form2','form3', 
                      'form4','form5','form6']),
-    onFileSelected(event) {
+    onFileSelected() {
+      //this.selectedFile = event.target.files
+      //console.log(this.selectedFile);
+      this.file = this.$refs.file.files[0];
       this.selectedFile = event.target.files
+      console.log(this.file);
+
     },
     onFileSelectedCV(event) {
       this.selectedFileCV = event.target.files
     },
     onFileSelectedTM(event) {
+      this.filetm = this.$refs.filetm.files[0];
       this.selectedFileTM = event.target.files
+      console.log(this.filetm);
     },
     onFileSelectedSRL(event) {
       this.selectedFileSRL = event.target.files
@@ -1790,14 +1938,35 @@
       const file = event.target.files[0]
     },
     onUpload() {
-      const fd = new FormData();
-      const tr = new FormData();
-      fd.append('file', this.selectedFile)
+      let fd = new FormData();
+      fd.append('file', this.file)
+      fd.append('filetm', this.filetm)
+      /*let params = new URLSearchParams();
+      params.append('selectedFile', 'fileToUpload' );
       var inputFileImage = document.getElementById("fileToUpload");
-      axios.post('http://postulacion.isc.cl/uploadfile/'+fd+'/fileToUpload')
+      axios.post('http://postulacion.isc.cl/uploadfile', params,
+      {
+        headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+        }
+      })
       .then(res => {
         console.log(res)
-      });
+      });*/
+
+      axios.post( 'http://postulacion.isc.cl/uploadfile',
+                fd,
+                {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+              }
+            ).then(function(){
+          console.log('SUCCESS!!');
+        })
+        .catch(function(){
+          console.log('FAILURE!!');
+        });
     },
     onFileChange(e) {
       var files = e.target.files || e.dataTransfer.files;
@@ -1994,9 +2163,9 @@
 
     enviarPostulacion: function(){
         this.guardar();
-        let obj = JSON.stringify(this.personaNatural);
+        let obj = JSON.stringify(this.personaJuridica);
     //console.log(obj);
-        Vue.axios.post('http://postulacion.isc.cl/personaNatural', obj).then((response) => {
+        Vue.axios.post('http://postulacion.isc.cl/personaJuridica', obj).then((response) => {
           alert("Postulacion Enviada");
           console.log(response.data);
           //console.log(response);
@@ -2223,7 +2392,7 @@
     },
 
     guardar: function(){
-
+      this.onUpload();
       this.personaJuridica.push({
         datosPersonales:{
         rut: this.rut,
@@ -2493,5 +2662,114 @@ $(document).ready(function() {
 }
 .cursor {
   cursor: pointer;
+}
+
+.ul-decorater{
+    /*list-style: none;*/
+    margin: 0;
+    padding-left: 3%;
+}
+
+.posicion-mensaje{
+  position: absolute;
+    right: 0;
+    z-index: 99999;
+    bottom: 0;
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-duration: 0.3s;
+}
+
+.close{
+  color: #bf371f;
+}
+
+.eliminar-input{
+  color: red;
+}
+
+  @keyframes fadeInOpacity {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.form-control:disabled, .ingreso__form-input:disabled, .datos-personales__input:disabled, .creacion-solicitud__select:disabled, .creacion-solicitud__form-input:disabled, .form-control[readonly], [readonly].ingreso__form-input, [readonly].datos-personales__input, [readonly].creacion-solicitud__select, [readonly].creacion-solicitud__form-input {
+    background-color: white;
+    opacity: 1;
+}
+
+
+.edit-composicion{
+  background: transparent;
+  border: none;
+  text-align: center;
+  width: 40%;
+}
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1040;
+    width: 100vw;
+    height: 100vh;
+    background-color: #2072BE;
+    opacity: 0.1;
+}
+
+.input{
+  display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #D3D3D3;
+    border-radius: 0.25rem;
+    -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+}
+
+.listaHov :hover{
+background-color: #f8f9fa;
+}
+
+.listaHov{
+  overflow: scroll;
+  max-height: 300px;
+}
+
+.listaHovHidden{
+overflow:none;
+}
+
+.listLine{
+  border-left:solid 8px #2072BE;
+}
+
+.question-icon{
+    margin-right: 5px;
+    color: #2072BE;
+    font-size: 16px;
+    cursor:pointer;
+}
+
+@media (min-width: 1200px){
+  .datos-personales--cv {
+    grid-column: 2/3;
+    padding-left: 0;
+}
 }
 </style>

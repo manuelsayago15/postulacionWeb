@@ -57,12 +57,12 @@ export default new Vuex.Store({
         },
 
         form3 (state) {
-            state.pnformulario1 = false;
-            state.pnformulario2 = false;
-            state.pnformulario3 = true;
-            state.pnformulario4 = false;
-            state.pnformulario5 = false;
-            state.pnformulario6 = false;
+            state.pjform1 = false;
+            state.pjform2 = false;
+            state.pjform3 = true;
+            state.pjform4 = false;
+            state.pjform5 = false;
+            state.pjform6 = false;
 
             state.done1 = 'header__progress-number-done';
             state.done2 = 'header__progress-number-done';
