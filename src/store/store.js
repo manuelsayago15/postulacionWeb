@@ -8,6 +8,7 @@ Vue.use(VueAxios, axios)
 
 export default new Vuex.Store({
   state: {
+    URL: process.env.VUE_APP_URL,   
   	rutGlobal: 111111111,
     nombre:'Manuel',
     done1: 'header__progress-number-active',
@@ -25,6 +26,15 @@ export default new Vuex.Store({
   },
 
   mutations:{
+
+        rutEnNumeroSolicitud(state, payload){
+            state.rutGlobal = payload.rut;
+            state.emailGlobal = payload.correo;
+            state.telefonoGlobal = payload.telefono;
+            state.camaraGlobal = payload.camara;
+            state.camaraNombreGlobal = payload.camara;
+            state.tipoSociedad = payload.tipoSociedad;
+        },
 
         frmDatosPrincipales(state){
 
